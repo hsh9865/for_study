@@ -3,110 +3,134 @@
 #include <ctime>
 #include <vector>
 #include <algorithm>
-
+const int max= 5;
+/*
+코드 목적 : 한배열의 방을 받고 랜덤하게 배치를하고 길이 어떻게 뚫려있을지 랜덤하게 할당한다
+0 : 고립되어있는 방
+1 : 옆으로만 뚫려있는방
+2 : 옆과 아래로만 뚫려있는 방
+3 : 옆과 위로만 뚫려있는 방
+  */
 int main(){
   srand(time(NULL));
-  int map_list[4][4];
-  for(int i = 0; i<4;i++)
+  int map_list[max][max];
+  for(int i = 0; i<max;i++)
     {
-      for(int j = 0 ;j<4;j++)
+      for(int j = 0 ; j < max;j++)
         {
           map_list[i][j]=0;
         }
     }
 
-  int num = rand()%4;
+  int num = rand()%max;
+  // int num = 1;  
   
-  map_list[0][num]=9;
-  bool test = std::find(std::begin(map_list[0]), std::end(map_list[0]), 2) != std::end(map_list[0]);
-  // std::cout << test << '\n';
-  // if(num == 0 || num == 3){
-  //   if(num == 0){
-  //     int type = rand()%2+1;
-  //     map_list[0][num+1] = type;
-  //     if(type == 1)
-  //     {
-  //       type = rand()%2+1;
-  //       map_list[0][2]=type;
-  //       if(type == 1){
-  //         map_list[0][3] = 2;
-  //       }
-  //     }
-  //   }
-  //   else if(num == 3){
-  //     int type = rand()%2+1;
-  //     map_list[0][num-1] = type;
-  //     if(type == 1)
-  //     {
-  //       type = rand()%2+1;
-  //       map_list[0][1]=type;
-  //       if(type == 1){
-  //         map_list[0][0] = 2;
-  //       }
-  //     }
-  //   }
-  // }
-  // else{
-  //   int type = rand()%2;
-  //   map_list[0][num-1] = type;
-  //   if(type == 0){
-  //     if(num+1 ==4) map_list[0][num+1] =2;
-  //     else{
-  //       type = rand()%2+1;
-  //       // std::cout << type << '\n';
-  //       map_list[0][num+1] = type;
-  //     }
-  //   }
-  //   else{
-  //     type = rand()%2;
-  //     // std::cout << type << '\n';
-  //     map_list[0][num+1] = type;
-  //     if(type == 1){
-  //       map_list[0][(num+2)%4] =2;
-  //     }
-  //   }
-  // }
   int count =1;
   int way;
-  while(!test)
+  int next_num;
+  for (int i = 0;i<max;i++)
     {
-      if(num -count < 0 || map_list[0][num-count+1]==0){
-        way = rand()%2+1;
-        map_list[0][num+count] = way;
-      }
-      else if(num + count >3 || map_list[0][num+count -1] == 0)
+      map_list[i][num]=9;
+      while(1)
       {
-        way = rand()%2+1;
-        map_list[0][num-count] = way;
-      }
-      else
-      {
-        way = rand()%3;
-        map_list[0][num-count] = way;
-        if(way == 0)
-        {
-          way = rand()%2+1;
-          map_list[0][num+count] = way;
-        }
-        else if(way ==2)
-        {
+        bool test = std::find(std::begin(map_list[i]), std::end(map_list[i]), 2) != std::end(map_list[i]);
+        if(num-count <0 && num+count>max-1){
+          if(!test)
+          {
+            std::cout << "find" << '\n';
+            if(map_list[i][0] == 1)
+            {
+              next_num = 0;
+              map_list[i][0] = 2;
+            }
+            else 
+            {
+              next_num = max-1;
+              map_list[i][max-1] = 2;
+            }
+          }
           break;
         }
-        else
+
+        if(num == 0 || num == max-1)
         {
-          way = rand()%3;
-          map_list[0][num+count] = way;
+          if(count == 1){
+            way = rand()%2;
+            way +=1;
+          }
+          else 
+          {
+            if(!test)
+            {
+              if(count == max-1) way =2;
+              else{
+                way = rand()%2;
+                way +=1;
+              }
+            }
+            else way = rand()%2;
+          }
+          if(num == 0 && map_list[i][num+count-1]!=0)
+          {
+            if(way == 2) next_num = count;
+            map_list[i][count] = way;
+          }
+          else if(num == max-1 && map_list[i][num-count+1] != 0)
+          {
+            if(way == 2) next_num = max-count-1;
+            map_list[i][max-count-1] =way;
+          }
         }
+        else{
+          if(num -count > -1)
+          {
+            if(test)
+              {
+                way = rand()%2;
+              }
+              else
+              {
+                way = rand()%3;
+                
+              }
+              if(map_list[i][num-count+1]!=0)
+              {
+                if(way == 2)next_num = num-count;
+                map_list[i][num-count] = way;
+              }
+          }
+          test = std::find(std::begin(map_list), std::end(map_list), 2) != std::end(map_list);
+
+          if(num + count < max)
+          {
+            if(test)
+            {
+              way = rand()%2;
+            }
+            else
+            {
+              way = rand()%2;
+              way+=1;
+            }
+            if(map_list[i][num+count-1]!=0)
+            {
+              if(way == 2)next_num = num+count;
+              map_list[i][num+count] = way;
+            }
+          }
+        }
+
+        count++;
       }
-      test = std::find(std::begin(map_list[0]), std::end(map_list[0]), 2) != std::end(map_list[0]);
+      num = next_num;
     }
-  for(int i = 0; i<4;i++)
+  
+  std::cout << '\n';
+  for(int i = 0; i<max;i++)
   {
-    for(int j = 0 ;j<4;j++)
-      {
-        std::cout << map_list[i][j] << ' ';
-      }
-    std::cout << '\n';
-  }  
+    std::cout << map_list[i] << ' ';
+    
+  } 
+  std::cout << '\n';
   return 0;
 }
