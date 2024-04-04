@@ -3,7 +3,7 @@
 #include <ctime>
 #include <vector>
 #include <algorithm>
-const int max= 5;
+const int max= 4;
 /*
 코드 목적 : 한배열의 방을 받고 랜덤하게 배치를하고 길이 어떻게 뚫려있을지 랜덤하게 할당한다
 0 : 고립되어있는 방
@@ -23,14 +23,15 @@ int main(){
     }
 
   int num = rand()%max;
-  // int num = 1;  
   
-  int count =1;
+  map_list[0][num] =9;
   int way;
   int next_num;
   for (int i = 0;i<max;i++)
     {
-      map_list[i][num]=9;
+      if(i != 0 )map_list[i][num]=3;
+      
+      int count =1;
       while(1)
       {
         bool test = std::find(std::begin(map_list[i]), std::end(map_list[i]), 2) != std::end(map_list[i]);
@@ -99,7 +100,7 @@ int main(){
                 map_list[i][num-count] = way;
               }
           }
-          test = std::find(std::begin(map_list), std::end(map_list), 2) != std::end(map_list);
+          test = std::find(std::begin(map_list[i]), std::end(map_list[i]), 2) != std::end(map_list[i]);
 
           if(num + count < max)
           {
@@ -119,7 +120,6 @@ int main(){
             }
           }
         }
-
         count++;
       }
       num = next_num;
@@ -128,9 +128,12 @@ int main(){
   std::cout << '\n';
   for(int i = 0; i<max;i++)
   {
-    std::cout << map_list[i] << ' ';
-    
+    for(int j = 0; j < max;j++)
+      {
+        std::cout << map_list[i][j] << ' ';
+      }
+    std::cout << '\n';
   } 
-  std::cout << '\n';
+  
   return 0;
 }
